@@ -1,8 +1,8 @@
-* SYNOPSIS
+# SYNOPSIS
 
 Download APKs from [appland](http://www.appland.se/);
 
-* USAGE
+# USAGE
 
 ```sh
 $ appland-download -o foo.apk http://www.appland.se/sv/app/25823
