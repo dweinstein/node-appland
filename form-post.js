@@ -1,7 +1,6 @@
 'use strict';
 const q = require('hyperquest');
 const fs = require('fs');
-const urlParse = require('url').parse;
 const Promise = require('bluebird');
 const rc = require('./config');
 const assert = require('assert');
@@ -32,7 +31,6 @@ module.exports = function postFormForResp(opts) {
     assert(typeof opts.url !== 'undefined', 'opts.url required');
 
     const url = opts.url;
-    const host = urlParse(opts.url).host;
     const req = {
       method: 'POST',
       headers: {
