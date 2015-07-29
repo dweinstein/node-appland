@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+'use strict';
+const loginRequest = require('../login-request');
+const firstTimeStartup = require('../first-time-startup');
+const downloadApp = require('../download-app');
+const co = require('co');
+const fs = require('fs');
+const rc = require('../config');
+const debug = require('debug')('appland:bin');
+const assert = require('assert');
+const urlParse = require('url').parse;
+
+function parseAppId(str) {
+  const match = /^https?:.*\/app\/(\d+)/.exec(str);
+  if (match) {
+    return match[1];
+  }
+  return str;
+}
+
+co(function*() {
+  const appId = parseAppId(rc.id || rc._[0]);
+  assert(appId, 'must supply app id');
+
+  const startup = yield firstTimeStartup();
+  const deviceToken = JSON.parse(startup).FirstTimeStartupResp.deviceToken;
+  const loginResp = yield loginRequest({deviceToken: deviceToken});
+  const sessionId = JSON.parse(loginResp).LoginResp.sessionId;
+  const stream = yield downloadApp(sessionId, appId);
+
+  const out = rc.o ? fs.createWriteStream(rc.o) : process.stdout;
+  stream.pipe(out);
+  stream.on('end', function () {
+    debug('stream ended');
+  });
+}).catch(function (err) {
+    console.error(err.stack);
+    process.exit(1);
+  });
