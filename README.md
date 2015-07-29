@@ -2,6 +2,12 @@
 
 Download APKs from [appland](http://www.appland.se/);
 
+# INSTALLATION
+
+```sh
+$ npm install -g appland
+```
+
 # USAGE
 
 ```sh
